@@ -1,36 +1,49 @@
-def Interpol1(x, y, N, f):
-    for i in range(N):
-        if f >= x[i] and f <= x[i + 1]:
-            return y[i] + (y[i + 1] - y[i]) * (f - x[i]) / (x[i + 1] - x[i])
+def newton_interpolation(x, y):
+    """
+    Вычисляет интерполяционный многочлен в форме Ньютона.
 
+    :param x: Список узлов интерполяции (x-координаты).
+    :param y: Список соответствующих значения функции в узлах интерполяции.
+    :return: Интерполяционный многочлен в форме Ньютона.
+    """
+    n = len(x)
+    if n != len(y):
+        raise ValueError("Списки x и y должны иметь одинаковую длину")
 
-def Interpol2(x, y, N, f):
-    l = [0] * 1000
-    s = 0
+    # Создаем таблицу разделенных разностей
+    f = [[0] * n for _ in range(n)]
+    for i in range(n):
+        f[i][0] = y[i]
 
-    for i in range(N + 1):
-        p = 1
-        for j in range(N + 1):
-            if j != i:
-                p = p * (f - x[j]) / (x[i] - x[j])
-        l[i] = p
+    for j in range(1, n):
+        for i in range(n - j):
+            f[i][j] = (f[i + 1][j - 1] - f[i][j - 1]) / (x[i + j] - x[i])
 
-    for i in range(N + 1):
-        s = s + y[i] * l[i]
+    # Строим многочлен в форме Ньютона
+    def newton_poly(x_val):
+        result = f[0][0]
+        x_term = 1
+        for i in range(1, n):
+            x_term *= (x_val - x[i - 1])
+            result += f[0][i] * x_term
+        return result
 
-    return s
+    return newton_poly
 
+# Пример использования
 
+x = []
+y = []
 n = int(input())
-X = []
-Y = []
-F = 0
-
 for i in range(n):
     args = [float(i) for i in input().split()]
-    X.append(args[0])
-    Y.append(args[1])
-F = float(input())
+    x.append(args[0])
+    y.append(args[1])
 
-print(Interpol1(X, Y, n, F))
-#print(Interpol2(X, Y, n, F))
+interpolation_poly = newton_interpolation(x, y)
+
+# Вычисление значения многочлена в точке
+x_val = float(input())
+result = interpolation_poly(x_val)
+print(f'Значение интерполяционного многочлена в точке {x_val} равно {result}')
+
