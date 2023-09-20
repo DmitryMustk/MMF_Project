@@ -1,3 +1,9 @@
+def interpol1(x, y, x_val, n):
+    for i in range(n):
+        if x_val >= x[i] and x_val <= x[i + 1]:
+            return (y[i] + (y[i + 1] - y[i]) * (x_val - x[i]) / (x[i + 1] - x[i]))
+
+
 def newton_interpolation(x, y):
     """
     Вычисляет интерполяционный многочлен в форме Ньютона.
@@ -41,9 +47,10 @@ for i in range(n):
     y.append(args[1])
 
 interpolation_poly = newton_interpolation(x, y)
+x_val = float(input())
+result1 = interpol1(x, y, x_val, n)
 
 # Вычисление значения многочлена в точке
-x_val = float(input())
-result = interpolation_poly(x_val)
-print(f'Значение интерполяционного многочлена в точке {x_val} равно {result}')
-
+result2 = interpolation_poly(x_val)
+print(f'А)Значение интерполяционного многочлена в точке {x_val} равно {result1}')
+print(f'Б)Значение интерполяционного многочлена в точке {x_val} равно {result2}')
